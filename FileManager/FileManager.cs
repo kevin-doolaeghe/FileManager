@@ -9,35 +9,69 @@ namespace FileManagerLibrary {
 
     public class FileManager {
 
-        public string[] GetFiles(string path) {
-            string[] files = Array.Empty<string>();
-            if (Directory.Exists(path)) {
-                files = Directory.GetFiles(path);
+        /// <summary>
+        /// Find all files contained in given directory
+        /// Return null if directory does not exist
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <returns></returns>
+        public static string[]? GetFiles(string dirPath) {
+            if (Directory.Exists(dirPath)) {
+                return Directory.GetFiles(dirPath);
+            } else {
+                return null;
             }
-            return files;
         }
 
-        public string[] GetDirectories(string path) {
-            string[] dirs = Array.Empty<string>();
-            if (Directory.Exists(path)) {
-                dirs = Directory.GetDirectories(path);
+        /// <summary>
+        /// Find all direct subdirs in given directory
+        /// Return null if directory does not exist
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <returns></returns>
+        public static string[]? GetSubDirectories(string dirPath) {
+            if (Directory.Exists(dirPath)) {
+                return Directory.GetDirectories(dirPath);
+            } else {
+                return null;
             }
-            return dirs;
         }
 
-        public void MoveDirectory(string src, string dst) {
-            string tmp = $"{dst}\\{Path.GetFileName(src)}";
-            Directory.Move(src, tmp);
-            Console.WriteLine($"{src} was moved to {tmp}.");
+        /// <summary>
+        /// Determines whether the given path refers to an existing directory
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <returns></returns>
+        public static bool DoesDirectoryExist(string dirPath) {
+            return Directory.Exists(dirPath);
         }
 
-        public void MoveFiles(string src, string dst) {
-            string[] files = GetFiles(src);
+        /// <summary>
+        /// Move src directory to dst directory
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dst"></param>
+        public static void MoveDirectory(string src, string dst) {
+            string dstDir = $"{dst}\\{Path.GetFileName(src)}";
+            Directory.Move(src, dstDir);
+            // Console.WriteLine($"{src} was moved to {dstDir}.");
+        }
+
+        /// <summary>
+        /// Move all files contained in src directory to dst directory
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dst"></param>
+        /// <returns></returns>
+        public static void MoveFiles(string src, string dst) {
+            string[]? files = GetFiles(src);
+            if (files == null) return;
+
             foreach (string srcFile in files) {
                 string dstFile = $"{dst}\\{Path.GetFileName(srcFile)}";
                 if (!File.Exists(dstFile)) {
                     File.Move(srcFile, dstFile);
-                    Console.WriteLine($"{srcFile} was moved to {dstFile}.");
+                    // Console.WriteLine($"{srcFile} was moved to {dstFile}.");
                 }
             }
         }

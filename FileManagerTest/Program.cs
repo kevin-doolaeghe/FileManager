@@ -4,29 +4,37 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommandLineInterfaceLibrary;
 using FileManagerLibrary;
 
 namespace FileManagerTest {
 
     class Program {
 
-        static void Main(string[] args) {
+        static void Main() {
+            CommandLineInterface cli = new();
 
-            const string srcPath = "C:\\FileManagerDirsExample\\src";
-            const string dstPath = "C:\\FileManagerDirsExample\\dst";
-            const string checkupPath = "Tmp\\scan";
+            cli.PrintString("Entrez le chemin source :");
+            string srcPath = cli.PromptString();
+
+            cli.PrintString("Entrez le chemin destination :");
+            string dstPath = cli.PromptString();
+
+            cli.PrintString("Entrez le chemin relatif à trouver pour effectuer le déplacement :");
+            string checkupPath = cli.PromptString();
 
             try {
-                FileManager fm = new();
-                foreach (string dir in fm.GetDirectories(srcPath)) {
-                    Console.WriteLine(dir);
-                    if (fm.GetDirectories(checkupPath).Contains($"{dir}\\{checkupPath}")) {
-                        fm.MoveDirectory(dir, dstPath);
+                foreach (string dir in FileManager.GetSubDirectories(srcPath) ?? Array.Empty<string>()) {
+                    cli.PrintString($"Found directory: {dir}");
+                    if (FileManager.DoesDirectoryExist($"{dir}\\{checkupPath}")) {
+                        cli.PrintString($"\t---> Moving {dir} to {dstPath}");
+                        FileManager.MoveDirectory(dir, dstPath);
                     }
                 }
             } catch (Exception e) {
                 Console.WriteLine($"The process failed: {e.Message}");
             }
+            cli.Pause();
         }
     }
 }
