@@ -11,6 +11,7 @@ namespace FileManagerTest {
     class Program {
 
         static void Main(string[] args) {
+
             const string srcPath = "C:\\FileManagerDirsExample\\src";
             const string dstPath = "C:\\FileManagerDirsExample\\dst";
             const string checkupPath = "Tmp\\scan";
